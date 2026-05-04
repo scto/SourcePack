@@ -1,31 +1,41 @@
-﻿SourcePack
-SourcePack is an Android utility designed to consolidate project source code into a single structured file (Markdown, XML, or Plain Text format). It facilitates the export of codebases for analysis using Large Language Models (LLMs) or for documentation purposes.
-Key Features
-* [x] Source Code Integration: Recursively scans local directories to generate a unified output file containing the directory structure and file contents.
-* [x] GitHub Integration: Accepts GitHub repository URLs to download the HEAD branch as a ZIP archive. The file tree is processed entirely in memory, requiring no local Git client.
-* [x] Structural Context: Generates a complete directory tree visualization at the beginning of the output file. Files excluded by filters (e.g., binary files) remain in the tree to help analyzers maintain architectural context.
-Intelligent Filtering
-* System Ignore: Automatically excludes build artifacts and metadata directories (e.g., .git, .gradle, build, node_modules).
-* Binary File Detection: Skips binary files based on extension and content analysis to reduce token usage.
-* Custom Rules: Supports user-defined blacklists for specific filenames and extensions.
-Output Formats
-* Markdown: Wraps code in language-specific triple backtick blocks.
-* XML: Wraps content in hierarchical tags for structured parsing.
-* Plain Text: Uses simple delimiters between files.
-* Compression: Optional mode to remove redundant spaces and line breaks.
-Tech Stack
-* Language: Kotlin 2.0
-* UI Framework: Jetpack Compose (Material 3)
-* Architecture: MVVM with Coroutines and Flow
-* Minimum SDK: Android 7.0 (API 24)
-Usage
-* Select Source:
-   * Folder: Grant access to a local project directory via the system document picker.
-   * Files: Select multiple specific files.
-   * GitHub: Enter a repository URL (e.g., https://github.com/username/repo).
-* Configuration: Access settings to toggle compression, select output formats (MD/XML/TXT), or modify exclusion rules.
-* Export: The app processes the input and writes the result to a destination URI selected by the user.
+# 📦 SourcePack
+Android
+
+Kotlin
+
 License
-Copyright 2025 Qingsu
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at Apache License 2.0.
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+**SourcePack** is a powerful Android utility designed to consolidate your project's source code into a single, structured file. Whether you need to feed your entire codebase into a Large Language Model (LLM) for analysis or generate comprehensive documentation, SourcePack makes it seamless.
+## ✨ Key Features
+ * [x] **Source Code Integration** Recursively scans local directories to generate a unified output file containing both the directory tree and file contents.
+ * [x] **GitHub Integration** Directly download and process GitHub repositories. Enter a URL, and SourcePack handles the HEAD branch ZIP in-memory—no Git client required.
+ * [x] **Structural Context** Generates a visual directory tree at the start of every export. Even filtered files (like binaries) appear in the tree to preserve architectural context for AI analyzers.
+## 🛡️ Smart Filtering & Privacy
+SourcePack is designed to be efficient with tokens and respectful of your build environment:
+ * **System Auto-Ignore**: Automatically skips build artifacts and metadata folders like .git, .gradle, build, and node_modules.
+ * **Binary Detection**: Smart analysis skips binary files (images, executables, etc.) to keep the output text-focused.
+ * **Custom Rules**: Full control via a user-defined blacklist for specific filenames or file extensions.
+## 🛠️ Output Options
+Tailor the output to your specific needs:
+| Format | Description |
+|---|---|
+| **Markdown** | Wraps code in language-specific triple backtick blocks (e.g., ```kotlin). |
+| **XML** | Hierarchical tags perfect for programmatic parsing and structured tools. |
+| **Plain Text** | Simple, clean delimiters for minimal overhead. |
+| **Compressed** | An optional mode that strips redundant whitespace and line breaks to save space. |
+## 🚀 Tech Stack
+ * **Language:** Kotlin 2.0
+ * **UI Framework:** Jetpack Compose (Material 3)
+ * **Architecture:** MVVM with Coroutines and Flow
+ * **Min SDK:** Android 7.0 (API 24)
+## 📖 How to Use
+ 1. **Choose your Source**:
+   * **Folder**: Use the system picker to grant access to a local project.
+   * **Files**: Hand-pick specific files for targeted analysis.
+   * **GitHub**: Paste a repo URL (e.g., https://github.com/user/repo).
+ 2. **Configure**: Visit **Settings** to toggle compression, pick your format (MD/XML/TXT), or refine exclusion rules.
+ 3. **Export**: SourcePack processes the data and saves it to your chosen location via the Storage Access Framework.
+## 📄 License
+Copyright 2025 **Qingsu**
+Licensed under the Apache License, Version 2.0 (the "License"). You may obtain a copy of the License at:
+http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
