@@ -37,9 +37,11 @@ jobs:
 
       #- name: Copy CI gradle.properties
       #  run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
+      - name: Give permission to executable
+        run: chmod +x gradlew
         
       - name: Generate APK
-        run: sh ./gradlew assemble${{ matrix.build-type }}
+        run: ./gradlew assemble${{ matrix.build-type }}
 
       - name: Upload APK
         uses: actions/upload-artifact@master
