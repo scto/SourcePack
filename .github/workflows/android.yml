@@ -39,7 +39,7 @@ jobs:
       #  run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
         
       - name: Generate APK
-        run: ./gradlew assemble${{ matrix.build-type }}
+        run: sh ./gradlew assemble${{ matrix.build-type }}
 
       - name: Upload APK
         uses: actions/upload-artifact@master
