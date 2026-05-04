@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        // 保持屏幕常亮，防止大文件打包时息屏中断
+        // Keep screen on to prevent interruption during large file packing
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         
         setContent {
@@ -64,12 +64,12 @@ class MainActivity : ComponentActivity() {
 fun AppContent(vm: MainVM) {
     var page by remember { mutableStateOf(Page.HOME) }
     
-    // 导航逻辑
+    // Navigation logic
     BackHandler(page != Page.HOME) {
         if(page == Page.CONFIG_GEN || page == Page.CONFIG_BL) page = Page.CONFIG_ROOT else page = Page.HOME
     }
     
-    // 页面切换动画
+    // Page transition animation
     AnimatedContent(
         targetState = page, 
         label = "Nav",
@@ -101,18 +101,18 @@ fun HomeScreen(vm: MainVM, toCfg: () -> Unit) {
     val exportDir by vm.exportDir.collectAsStateWithLifecycle()
     val context = LocalContext.current
     
-    // --- 状态管理 ---
+    // --- State Management ---
     if (state is UiState.Loading) {
-        // 加载中禁止误触返回，双击取消任务
+        // Prevent accidental back press during loading, double-tap to cancel
         var lastBackPressTime by remember { mutableLongStateOf(0L) }
         BackHandler {
             val currentTime = System.currentTimeMillis()
             if (currentTime - lastBackPressTime < 2000) {
                 vm.cancelTask()
-                Toast.makeText(context, "操作已取消", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Operation cancelled", Toast.LENGTH_SHORT).show()
             } else {
                 lastBackPressTime = currentTime
-                Toast.makeText(context, "再按一次取消", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Press again to cancel", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -123,7 +123,7 @@ fun HomeScreen(vm: MainVM, toCfg: () -> Unit) {
     var projectName by remember { mutableStateOf("Project") }
     var mode by remember { mutableIntStateOf(0) } // 0:Folder, 1:Files, 2:Git
 
-    // --- 文件保存器 ---
+    // --- File Saver ---
     val saver = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/markdown")) { dest ->
         if (dest != null) {
             when (mode) {
@@ -139,21 +139,21 @@ fun HomeScreen(vm: MainVM, toCfg: () -> Unit) {
         val fileName = "${projectName}_$time.md"
 
         if (exportDir != null) {
-            // 自动保存模式
+            // Auto save mode
             when (mode) {
                 0 -> sourceUri?.let { vm.packDirectly(it, null, fileName) }
                 1 -> sourceUris?.let { vm.packListDirectly(it, null, fileName) }
                 2 -> gitUrl?.let { vm.runGit(it, null, fileName) }
             }
         } else {
-            // 手动保存模式
+            // Manual save mode
             saver.launch(fileName)
         }
     }
 
-    // --- 核心选择器 ---
+    // --- Core Pickers ---
 
-    // 1. 文件夹选择器 (必须使用 OpenDocumentTree 才能获取目录权限)
+    // 1. Folder Picker (Must use OpenDocumentTree for directory permissions)
     val dirPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
         if (uri != null) {
             sourceUri = uri
@@ -164,8 +164,8 @@ fun HomeScreen(vm: MainVM, toCfg: () -> Unit) {
         }
     }
 
-    // 2. 文件选择器 (使用 GetMultipleContents 也就是"浏览器模式")
-    // 这样可以直接调起 MT 管理器等第三方应用，体验更好
+    // 2. File Picker (Using GetMultipleContents / "Browser mode")
+    // This can directly trigger third-party apps like MT Manager for a better experience
     val filePicker = rememberLauncherForActivityResult(GetMultipleContents()) { uris ->
         if (uris.isNotEmpty()) {
             sourceUris = uris
@@ -177,7 +177,7 @@ fun HomeScreen(vm: MainVM, toCfg: () -> Unit) {
     
     var showGitDialog by remember { mutableStateOf(false) }
 
-    // --- UI 布局 ---
+    // --- UI Layout ---
     Scaffold { pad ->
         Box(
             Modifier
@@ -194,7 +194,7 @@ fun HomeScreen(vm: MainVM, toCfg: () -> Unit) {
                             .padding(horizontal = 24.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        // 顶部按钮栏
+                        // Top Button Bar
                         Row(
                             modifier = Modifier.fillMaxWidth().padding(top = 16.dp), 
                             horizontalArrangement = Arrangement.End
@@ -213,20 +213,20 @@ fun HomeScreen(vm: MainVM, toCfg: () -> Unit) {
                         Text("SourcePack", fontSize = 36.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
                         Spacer(Modifier.height(80.dp))
 
-                        // 主要功能入口
-                        HomeBtn(Ico.Folder, "项目文件夹", "递归扫描整个项目。适合让 AI 理解完整架构和文件关系。") { 
-                            // 直接启动，无需权限检查
+                        // Primary Function Entries
+                        HomeBtn(Ico.Folder, "Project Folder", "Recursively scan the entire project. Ideal for helping AI understand architecture.") { 
+                            // Direct launch, no additional permission check required here
                             dirPicker.launch(null) 
                         }
                         Spacer(Modifier.height(16.dp))
                         
-                        HomeBtn(Ico.File, "选择文件", "精准提取特定文件。调用系统选择器 (支持MT管理器)。") { 
-                            // 启动浏览器模式选择器，传入 */* 允许所有文件
+                        HomeBtn(Ico.File, "Select Files", "Precisely extract specific files. Uses system picker (supports MT Manager).") { 
+                            // Start browser mode picker, passing */* for all files
                             filePicker.launch("*/*") 
                         }
                         Spacer(Modifier.height(16.dp))
                         
-                        HomeBtn(Ico.CloudDownload, "GitHub", "直接下载并解析远程仓库。适合分析开源项目源码。") { 
+                        HomeBtn(Ico.CloudDownload, "GitHub", "Download and parse remote repositories directly. Good for open source analysis.") { 
                             showGitDialog = true 
                         }
                         
@@ -241,7 +241,7 @@ fun HomeScreen(vm: MainVM, toCfg: () -> Unit) {
         }
     }
     
-    // Git 输入弹窗
+    // Git Input Dialog
     if (showGitDialog) {
         var url by remember { mutableStateOf("") }
         AlertDialog(
@@ -249,7 +249,7 @@ fun HomeScreen(vm: MainVM, toCfg: () -> Unit) {
             title = { Text("GitHub URL") },
             text = { 
                 Column {
-                    Text("输入仓库地址。我们将下载并构建完整的文件树结构。")
+                    Text("Enter repository URL. We will download and build the full file tree structure.")
                     Spacer(Modifier.height(8.dp))
                     OutlinedTextField(url, { url = it }, placeholder = { Text("https://github.com/user/repo") }, modifier = Modifier.fillMaxWidth()) 
                 }
@@ -262,7 +262,7 @@ fun HomeScreen(vm: MainVM, toCfg: () -> Unit) {
                         showGitDialog = false
                         startPacking()
                     } 
-                }) { Text("下一步") } 
+                }) { Text("Next") } 
             }
         )
     }

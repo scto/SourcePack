@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// ... materialIcon 函数保持不变 ...
 private fun materialIcon(name: String, block: androidx.compose.ui.graphics.vector.PathBuilder.() -> Unit): ImageVector {
     return ImageVector.Builder(name, 24.dp, 24.dp, 24.0f, 24.0f).apply {
         path(fill = SolidColor(Color.Black), pathBuilder = block)
@@ -25,7 +24,6 @@ private fun materialIcon(name: String, block: androidx.compose.ui.graphics.vecto
 }
 
 object Ico {
-    // 系统图标保持不变...
     val Settings = Icons.Default.Settings
     val ArrowBack = Icons.AutoMirrored.Filled.ArrowBack
     val ArrowRight = Icons.AutoMirrored.Filled.KeyboardArrowRight
@@ -36,8 +34,7 @@ object Ico {
     val Error = Icons.Default.Warning
     val Info = Icons.Default.Info
 
-    // === 自定义图标 ===
-    // Inventory2, Folder, File, CloudDownload, Sun, Moon 保持不变...
+    // === Custom Icons ===
     val Inventory2 = materialIcon("Inv") {
         moveTo(20.0f, 2.0f); horizontalLineTo(4.0f); curveTo(2.9f, 2.0f, 2.0f, 2.9f, 2.0f, 4.0f); verticalLineToRelative(3.01f); curveTo(2.0f, 8.11f, 2.9f, 9.0f, 4.0f, 9.0f); horizontalLineToRelative(1.0f); verticalLineToRelative(11.0f); curveToRelative(0.0f, 1.1f, 0.9f, 2.0f, 2.0f, 2.0f); horizontalLineToRelative(10.0f); curveToRelative(1.1f, 0.0f, 2.0f, -0.9f, 2.0f, -2.0f); verticalLineTo(9.0f); horizontalLineToRelative(1.0f); curveToRelative(1.1f, 0.0f, 2.0f, -0.89f, 2.0f, -1.99f); verticalLineTo(4.0f); curveTo(22.0f, 2.9f, 21.1f, 2.0f, 20.0f, 2.0f); close(); moveTo(9.0f, 12.0f); horizontalLineToRelative(6.0f); verticalLineToRelative(2.0f); horizontalLineTo(9.0f); verticalLineTo(12.0f); close(); moveTo(20.0f, 7.0f); horizontalLineTo(4.0f); verticalLineTo(4.0f); horizontalLineToRelative(16.0f); verticalLineTo(7.0f); close()
     }
@@ -57,59 +54,49 @@ object Ico {
         moveTo(11.01f, 3.05f); curveTo(6.51f, 3.54f, 3.0f, 7.36f, 3.0f, 12.0f); curveToRelative(0.0f, 4.97f, 4.03f, 9.0f, 9.0f, 9.0f); curveToRelative(4.63f, 0.0f, 8.45f, -3.5f, 8.95f, -8.0f); curveToRelative(-5.25f, 0.0f, -9.5f, -4.25f, -9.5f, -9.5f); close()
     }
 
-    // === 全选 (SelectAll) ===
-    // 采用“积木法”绘制：把虚线看作一个个小长方形块，确保填充可见
+    // === SelectAll ===
     val SelectAll = materialIcon("SelAll") {
-        // --- 外层大虚线框 (24x24画布, 边距3) ---
-        // 上边两段
-        moveTo(4f, 4f); horizontalLineToRelative(5f); verticalLineToRelative(2f); horizontalLineTo(4f); close() // 左上横
-        moveTo(15f, 4f); horizontalLineToRelative(5f); verticalLineToRelative(2f); horizontalLineTo(15f); close() // 右上横
-        // 下边两段
-        moveTo(4f, 18f); horizontalLineToRelative(5f); verticalLineToRelative(2f); horizontalLineTo(4f); close() // 左下横
-        moveTo(15f, 18f); horizontalLineToRelative(5f); verticalLineToRelative(2f); horizontalLineTo(15f); close() // 右下横
-        // 左边中间两段 (竖条)
+        // --- Outer dashed border ---
+        moveTo(4f, 4f); horizontalLineToRelative(5f); verticalLineToRelative(2f); horizontalLineTo(4f); close()
+        moveTo(15f, 4f); horizontalLineToRelative(5f); verticalLineToRelative(2f); horizontalLineTo(15f); close()
+        // Bottom lines
+        moveTo(4f, 18f); horizontalLineToRelative(5f); verticalLineToRelative(2f); horizontalLineTo(4f); close()
+        moveTo(15f, 18f); horizontalLineToRelative(5f); verticalLineToRelative(2f); horizontalLineTo(15f); close()
+        // Left middle vertical bars
         moveTo(4f, 7f); horizontalLineToRelative(2f); verticalLineToRelative(4f); horizontalLineTo(4f); close()
         moveTo(4f, 13f); horizontalLineToRelative(2f); verticalLineToRelative(4f); horizontalLineTo(4f); close()
-        // 右边中间两段 (竖条)
+        // Right middle vertical bars
         moveTo(18f, 7f); horizontalLineToRelative(2f); verticalLineToRelative(4f); horizontalLineTo(18f); close()
         moveTo(18f, 13f); horizontalLineToRelative(2f); verticalLineToRelative(4f); horizontalLineTo(18f); close()
 
-        // --- 内层小虚线框 (中心) ---
-        // 四个角的小方块，组成一个小框
+        // --- Inner small square (center) ---
         moveTo(9f, 9f); horizontalLineToRelative(2f); verticalLineToRelative(2f); horizontalLineTo(9f); close()
         moveTo(13f, 9f); horizontalLineToRelative(2f); verticalLineToRelative(2f); horizontalLineTo(13f); close()
         moveTo(13f, 13f); horizontalLineToRelative(2f); verticalLineToRelative(2f); horizontalLineTo(13f); close()
         moveTo(9f, 13f); horizontalLineToRelative(2f); verticalLineToRelative(2f); horizontalLineTo(9f); close()
     }
 
-    // === 取消全选 (UnselectAll) ===
-    // 基础同上，增加一条粗斜线
+    // === UnselectAll ===
     val UnselectAll = materialIcon("UnSel") {
-        // 1. 复制 SelectAll 的所有内容
-        // 上
+        // 1. Copy SelectAll content
         moveTo(4f, 4f); horizontalLineToRelative(5f); verticalLineToRelative(2f); horizontalLineTo(4f); close()
         moveTo(15f, 4f); horizontalLineToRelative(5f); verticalLineToRelative(2f); horizontalLineTo(15f); close()
-        // 下
         moveTo(4f, 18f); horizontalLineToRelative(5f); verticalLineToRelative(2f); horizontalLineTo(4f); close()
         moveTo(15f, 18f); horizontalLineToRelative(5f); verticalLineToRelative(2f); horizontalLineTo(15f); close()
-        // 左
         moveTo(4f, 7f); horizontalLineToRelative(2f); verticalLineToRelative(4f); horizontalLineTo(4f); close()
         moveTo(4f, 13f); horizontalLineToRelative(2f); verticalLineToRelative(4f); horizontalLineTo(4f); close()
-        // 右
         moveTo(18f, 7f); horizontalLineToRelative(2f); verticalLineToRelative(4f); horizontalLineTo(18f); close()
         moveTo(18f, 13f); horizontalLineToRelative(2f); verticalLineToRelative(4f); horizontalLineTo(18f); close()
-        // 内
         moveTo(9f, 9f); horizontalLineToRelative(2f); verticalLineToRelative(2f); horizontalLineTo(9f); close()
         moveTo(13f, 9f); horizontalLineToRelative(2f); verticalLineToRelative(2f); horizontalLineTo(13f); close()
         moveTo(13f, 13f); horizontalLineToRelative(2f); verticalLineToRelative(2f); horizontalLineTo(13f); close()
         moveTo(9f, 13f); horizontalLineToRelative(2f); verticalLineToRelative(2f); horizontalLineTo(9f); close()
 
-        // 2. 增加实心斜线 (左下到右上)
-        // 使用多边形来模拟一条有厚度的线
-        moveTo(5f, 20f) // 起点：左下
-        lineTo(20f, 5f) // 终点：右上
-        lineTo(21f, 6f) // 稍微往右偏移一点，形成宽度
-        lineTo(6f, 21f) // 回到左下偏移点
+        // 2. Add diagonal slash
+        moveTo(5f, 20f)
+        lineTo(20f, 5f)
+        lineTo(21f, 6f)
+        lineTo(6f, 21f)
         close()
     }
 }

@@ -26,7 +26,7 @@ fun AppTheme(
 ) {
     val context = LocalContext.current
     
-    // 优先使用动态取色 (Dynamic Colors)
+    // Prioritize the use of Dynamic Colors (Material You)
     val colorScheme = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
     } else {

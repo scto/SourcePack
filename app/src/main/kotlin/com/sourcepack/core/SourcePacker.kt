@@ -37,7 +37,7 @@ object SourcePacker {
         cb: ProgressCallback
     ) = withContext(Dispatchers.IO) {
         val outputStream = ctx.contentResolver.openOutputStream(destUri, "w") ?: throw IOException("Cannot open dest URI")
-        // 使用 BufferWriter 减少 IO 次数
+        // Use BufferedWriter to reduce IO operations
         val writer = BufferedWriter(OutputStreamWriter(outputStream), BUFFER_SIZE)
 
         try {
@@ -80,7 +80,6 @@ object SourcePacker {
         }
     }
 
-    // ... packGitHubRepo 保持不变 ...
     suspend fun packGitHubRepo(
         urlStr: String,
         destUri: Uri,
@@ -121,7 +120,7 @@ object SourcePacker {
         if (prefix.isEmpty()) sb.append("📦 ${node.name}\n")
 
         if (node.isDirectory) {
-            // listFiles 可能是耗时操作，但在 IO 线程中是安全的
+            // listFiles might be a time-consuming operation, but it is safe on IO thread
             val children = node.listFiles()
                 .sortedWith(compareBy({ !it.isDirectory }, { it.name }))
             
@@ -152,7 +151,7 @@ object SourcePacker {
         cb: ProgressCallback,
         ignoreFile: String
     ) {
-        // 频繁检查协程取消状态，保证 UI 响应
+        // Regularly check coroutine cancellation state to maintain UI responsiveness
         currentCoroutineContext().ensureActive()
 
         if (node.isDirectory) {
@@ -191,7 +190,6 @@ object SourcePacker {
         }
     }
 
-    // FastFile 接口及实现保持不变...
     interface FastFile {
         val name: String
         val isDirectory: Boolean
@@ -199,6 +197,7 @@ object SourcePacker {
         fun listFiles(): List<FastFile>
         fun openStream(ctx: Context): InputStream
     }
+
     class JavaIoFile(val file: File) : FastFile {
         override val name: String get() = file.name
         override val isDirectory: Boolean get() = file.isDirectory
@@ -206,6 +205,7 @@ object SourcePacker {
         override fun listFiles(): List<FastFile> = file.listFiles()?.map { JavaIoFile(it) } ?: emptyList()
         override fun openStream(ctx: Context): InputStream = FileInputStream(file)
     }
+
     class DocumentFileNode(val file: DocumentFile) : FastFile {
         override val name: String get() = file.name ?: ""
         override val isDirectory: Boolean get() = file.isDirectory
@@ -213,6 +213,7 @@ object SourcePacker {
         override fun listFiles(): List<FastFile> = file.listFiles().map { DocumentFileNode(it) }
         override fun openStream(ctx: Context): InputStream = ctx.contentResolver.openInputStream(file.uri) ?: throw IOException()
     }
+
     class ZipFastFile(
         override val name: String,
         override val isDirectory: Boolean,
@@ -225,7 +226,6 @@ object SourcePacker {
         override fun openStream(ctx: Context): InputStream = if (entry != null) zipFile.getInputStream(entry) else ByteArrayInputStream(ByteArray(0))
     }
     
-    // buildZipVFS 保持不变...
     private fun buildZipVFS(zipFile: ZipFile, projectName: String): ZipFastFile {
         val treeMap = mutableMapOf<String, MutableList<ZipEntry>>()
         val entries = zipFile.entries()
@@ -278,15 +278,15 @@ object SourcePacker {
                     val headStream = ByteArrayInputStream(headBuffer, 0, headReadLen)
                     val combinedStream = SequenceInputStream(headStream, ins)
                     
-                    // 读取文本 (IO 操作)
+                    // Read text (IO operation)
                     val rawContent = combinedStream.bufferedReader().use { it.readText() }
                     
-                    // CPU 密集操作转移到 Default 线程
+                    // Move CPU-intensive operation to Default dispatcher
                     val contentToProcess = withContext(Dispatchers.Default) {
                         if (cfg.removeComments) removeComments(rawContent, path) else rawContent
                     }
 
-                    // 写入
+                    // Write output
                     contentToProcess.lineSequence().forEach { line ->
                         if (cfg.compress) {
                             val trimmed = line.trim()
@@ -308,8 +308,6 @@ object SourcePacker {
             writer.write("\n[Read Error: ${e.message}]\n")
         }
     }
-
-    // removeComments, readAtMost, isBufferBinary, writeHeader, writeFooter, formatHeader, formatFooter, escapeXml 保持不变 ...
     
     private fun removeComments(text: String, fileName: String): String {
         val ext = fileName.substringAfterLast('.', "").lowercase()

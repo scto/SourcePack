@@ -31,12 +31,12 @@ class PreferenceManager(context: Context) {
         }
     }
 
-    // 存储是否为深色模式
+    // Store whether it is dark mode
     var isDarkTheme: Boolean
         get() = p.getBoolean("is_dark_theme", false)
         set(v) = p.edit().putBoolean("is_dark_theme", v).apply()
 
-    // --- 新增：自定义导出路径 URI ---
+    // --- Added: Custom export path URI ---
     var exportUriStr: String?
         get() = p.getString("export_uri", null)
         set(v) = p.edit().putString("export_uri", v).apply()
